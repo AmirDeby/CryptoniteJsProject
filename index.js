@@ -56,12 +56,23 @@ function drawCoins() {
 
 function drawCoin(coin) {
 
-    ELEMENTS.$coinsList.append(`
+    const $coin = $(`
     <div class="card"> 
     <div>${coin.symbol}</div>
     <div>${coin.name}</div>
+    <div><button class="more-info btn btn-danger">More Info</button></div>
     </div>
     `)
+
+    ELEMENTS.$coinsList.append($coin);
+
+    const $moreInfo = $coin.find(".more-info");
+    $moreInfo.on('click', async function () {
+
+        const moreInfo = await getMoreInfoFromApi(coin.id);
+        console.log(moreInfo);
+
+    })
 
 }
 
