@@ -5,7 +5,8 @@ const state = {
 }
 
 const ELEMENTS = {
-    $coinsList: $('#coins-list')
+    $coinsList: $('#coins-list'),
+    $searchForm: $('#search-form'),
 }
 const NUM_OF_COINS = 100;
 
@@ -22,11 +23,19 @@ async function init() {
 
 
 
-
-
     } catch (error) {
         console.error('caught error!', error);
     }
+    // START OF EVENT LISTENERS
+    ELEMENTS.$searchForm.on('submit', function (event) {
+
+        event.preventDefault();
+        const form = event.target;
+        const symbol = form.search.value;
+
+        filterCoin(symbol);
+    })
+    // END OF EVENT LISTENERS
 }
 
 async function saveCoinsToState() {
@@ -46,7 +55,7 @@ function drawCoins() {
 }
 
 function drawCoin(coin) {
-    
+
     ELEMENTS.$coinsList.append(`
     <div class="card"> 
     <div>${coin.symbol}</div>
@@ -55,3 +64,41 @@ function drawCoin(coin) {
     `)
 
 }
+
+function searchCoinInState(symbol) {
+
+    const coin = state.coins.find(coin => coin.symbol === symbol);
+
+    return coin;
+
+}
+
+function clearCoinsFromHtml() {
+
+    ELEMENTS.$coinsList.empty();
+
+}
+
+function drawError() {
+
+    clearCoinsFromHtml()
+    ELEMENTS.$coinsList.append(`
+    <h2>Coin not Found</h2>
+    `)
+
+}
+
+function filterCoin(symbol) {
+
+    const coin = searchCoinInState(symbol);
+    clearCoinsFromHtml();
+    if (coin) {
+        drawCoin(coin)
+    }
+    else {
+        drawError()
+    }
+    // equivalent to:
+    // coin ? drawCoin(coin) : drawError();
+}
+
