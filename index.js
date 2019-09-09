@@ -48,6 +48,15 @@ async function saveCoinsToState() {
 
 }
 
+async function saveMoreInfoToState(coinId) {
+
+    const coin = await getMoreInfoFromApi(coinId);
+
+    const coinIndex = state.coins.findIndex(coin => coin.id === coinId);
+
+    state.coins[coinIndex] = coin;
+}
+
 function drawCoins() {
 
     state.coins.forEach(drawCoin);
@@ -56,22 +65,34 @@ function drawCoins() {
 
 function drawCoin(coin) {
 
+    const elementId = `coin-${coin.id}`;
     const $coin = $(`
     <div class="card"> 
-    <div>${coin.symbol}</div>
-    <div>${coin.name}</div>
-    <div><button class="more-info btn btn-danger">More Info</button></div>
+        <div>${coin.symbol}</div>
+        <div>${coin.name}</div>
+        <p>
+            <button class="more-info-btn btn btn-primary" type="button" data-toggle="collapse" data-target="#${elementId}" aria-expanded="false" aria-controls="collapseExample">
+            More Info
+            </button>
+        </p>
+        <div class="collapse" id="${elementId}">
+            <div class="card card-body info">
+               
+                </div>
+            </div>
+        </div>
     </div>
     `)
 
     ELEMENTS.$coinsList.append($coin);
 
-    const $moreInfo = $coin.find(".more-info");
-    $moreInfo.on('click', async function () {
+    const $moreInfoButton = $coin.find(".more-info-btn");
+    $moreInfoButton.on('click', async function () {
 
-        const moreInfo = await getMoreInfoFromApi(coin.id);
-        console.log(moreInfo);
-
+        await saveMoreInfoToState(coin.id);
+        const coinInfo = state.coins.find(c => c.id === coin.id);
+        const $moreInfo = createMoreInfoHTML(coinInfo);
+        $coin.find('.info').html($moreInfo);
     })
 
 }
@@ -113,3 +134,15 @@ function filterCoin(symbol) {
     // coin ? drawCoin(coin) : drawError();
 }
 
+function createMoreInfoHTML(coin) {
+
+    const $moreInfo = $(`
+    <div><img src="${coin.image.small}"/></div>
+    <div>${coin.market_data.current_price.usd} 💲</div>
+    <div>${coin.market_data.current_price.eur} € </div>
+    <div>${coin.market_data.current_price.ils} ₪ </div>
+
+    `);
+
+    return $moreInfo;
+}
