@@ -7,6 +7,7 @@ const state = {
 const ELEMENTS = {
     $coinsList: $('#coins-list'),
     $searchForm: $('#search-form'),
+    $loader: $('#loader'),
 }
 const NUM_OF_COINS = 100;
 
@@ -48,7 +49,7 @@ async function saveCoinsToState() {
 
 }
 
-async function saveMoreInfoToState(coinId) {
+async function getMoreInfo(coinId) {
 
     const coin = await getMoreInfoFromApi(coinId);
 
@@ -67,17 +68,28 @@ function drawCoin(coin) {
 
     const elementId = `coin-${coin.id}`;
     const $coin = $(`
-    <div class="card"> 
-        <div>${coin.symbol}</div>
-        <div>${coin.name}</div>
-        <p>
-            <button class="more-info-btn btn btn-primary" type="button" data-toggle="collapse" data-target="#${elementId}" aria-expanded="false" aria-controls="collapseExample">
-            More Info
-            </button>
-        </p>
-        <div class="collapse" id="${elementId}">
-            <div class="card card-body info">
-               
+    <div class="coin-container col-12 col-md-4">
+        <div class="coin card"> 
+            <div>${coin.symbol}</div>
+            <div>${coin.name}</div>
+            <p>
+                <button class="more-info-btn btn btn-primary" type="button" data-toggle="collapse" data-target="#${elementId}" aria-expanded="false" aria-controls="collapseExample">
+                More Info
+                </button>
+            </p>
+            <div class="collapse" id="${elementId}">
+                <div class="card card-body">
+                <div class="loader loader-dis lds-roller">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </div>
+                    <div class="info"></div>
                 </div>
             </div>
         </div>
@@ -89,9 +101,11 @@ function drawCoin(coin) {
     const $moreInfoButton = $coin.find(".more-info-btn");
     $moreInfoButton.on('click', async function () {
 
-        await saveMoreInfoToState(coin.id);
+        $coin.find('.loader').show();
+        await getMoreInfo(coin.id);
         const coinInfo = state.coins.find(c => c.id === coin.id);
         const $moreInfo = createMoreInfoHTML(coinInfo);
+        $coin.find('.loader').hide();
         $coin.find('.info').html($moreInfo);
     })
 
@@ -135,14 +149,11 @@ function filterCoin(symbol) {
 }
 
 function createMoreInfoHTML(coin) {
-
-    const $moreInfo = $(`
+    return $(`
     <div><img src="${coin.image.small}"/></div>
-    <div>${coin.market_data.current_price.usd} 💲</div>
+    <div>${coin.market_data.current_price.usd} $ </div>
     <div>${coin.market_data.current_price.eur} € </div>
     <div>${coin.market_data.current_price.ils} ₪ </div>
-
     `);
-
-    return $moreInfo;
 }
+

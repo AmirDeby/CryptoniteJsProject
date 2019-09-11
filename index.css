@@ -1,3 +1,16 @@
 #screen {
-    margin-top: 56px;
+    margin-top: 72px;
+}
+
+.logo-size {
+    width: 63px;
+    margin-right: 30px;
+}
+
+.coin-container {
+    margin-bottom: 16px;
+}
+
+.coin {
+    padding: 16px;
 }
