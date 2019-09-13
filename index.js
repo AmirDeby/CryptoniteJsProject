@@ -1,6 +1,7 @@
 const state = {
 
     coins: [],
+    selectedCoins: [],
 
 }
 
@@ -71,7 +72,8 @@ function drawCoin(coin) {
     <div class="coin-container col-12 col-md-4">
         <div class="coin card"> 
             <div>${coin.symbol}</div>
-            <div>${coin.name}</div>
+            <div class="coin-mrg">${coin.name}</div>
+            <input type="checkbox" class="toggle-btn" data-style="ios">
             <p>
                 <button class="more-info-btn btn btn-primary" type="button" data-toggle="collapse" data-target="#${elementId}" aria-expanded="false" aria-controls="collapseExample">
                 More Info
@@ -98,6 +100,11 @@ function drawCoin(coin) {
 
     ELEMENTS.$coinsList.append($coin);
 
+
+    const $toggleButton = $coin.find('.toggle-btn');
+    //  initialize the toggle checkbox with the bootstrap toggle style
+    // $toggleButton.bootstrapToggle();
+
     const $moreInfoButton = $coin.find(".more-info-btn");
     $moreInfoButton.on('click', async function () {
 
@@ -107,6 +114,16 @@ function drawCoin(coin) {
         const $moreInfo = createMoreInfoHTML(coinInfo);
         $coin.find('.loader').hide();
         $coin.find('.info').html($moreInfo);
+    })
+
+    $toggleButton.on('click', function (e) {
+        const isToggled = toggleCoin(coin.id);
+        if (!isToggled) {
+            e.preventDefault();
+        }
+        console.log(state.selectedCoins);
+
+
     })
 
 }
@@ -156,4 +173,21 @@ function createMoreInfoHTML(coin) {
     <div>${coin.market_data.current_price.ils} ₪ </div>
     `);
 }
+
+function toggleCoin(coinId) {
+
+    const index = state.selectedCoins.indexOf(coinId);
+    if (index > -1) {
+        state.selectedCoins.splice(index, 1);
+        return true;
+    }
+
+    if (state.selectedCoins.length < 2) {
+
+        state.selectedCoins.push(coinId);
+        return true;
+    }
+ return false
+}
+
 
