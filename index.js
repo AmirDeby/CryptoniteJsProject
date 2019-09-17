@@ -14,6 +14,7 @@ const ELEMENTS = {
     $modalBody: $('.modal-body'),
 }
 const NUM_OF_COINS = 100;
+const MAX_SELECTED_COINS = 2;
 
 init();
 
@@ -183,7 +184,7 @@ function toggleCoin(coinId) {
         selectedCoins.splice(index, 1);
         return true;
     }
-    const canSelectCoin = selectedCoins.length < 2;
+    const canSelectCoin = selectedCoins.length < MAX_SELECTED_COINS;
 
     if (canSelectCoin) {
         selectedCoins.push(coinId);
