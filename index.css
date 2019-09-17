@@ -18,3 +18,12 @@
 .coin-mrg{
 margin-bottom: 15px;
 }
+
+.replace-coin-container{
+    display: flex;
+    margin-bottom: 16px;
+}
+
+.replace-coin-id{
+    flex: 1;
+}

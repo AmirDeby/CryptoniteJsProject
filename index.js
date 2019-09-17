@@ -2,6 +2,7 @@ const state = {
 
     coins: [],
     selectedCoins: [],
+    candidateCoin: null,
 
 }
 
@@ -9,6 +10,8 @@ const ELEMENTS = {
     $coinsList: $('#coins-list'),
     $searchForm: $('#search-form'),
     $loader: $('#loader'),
+    $modal: $('#cModal'),
+    $modalBody: $('.modal-body'),
 }
 const NUM_OF_COINS = 100;
 
@@ -69,7 +72,7 @@ function drawCoin(coin) {
 
     const elementId = `coin-${coin.id}`;
     const $coin = $(`
-    <div class="coin-container col-12 col-md-4">
+    <div class="coin-container col-12 col-md-4" data-coinid="${coin.id}">
         <div class="coin card"> 
             <div>${coin.symbol}</div>
             <div class="coin-mrg">${coin.name}</div>
@@ -117,13 +120,11 @@ function drawCoin(coin) {
     })
 
     $toggleButton.on('click', function (e) {
+
         const isToggled = toggleCoin(coin.id);
         if (!isToggled) {
             e.preventDefault();
         }
-        console.log(state.selectedCoins);
-
-
     })
 
 }
@@ -175,19 +176,75 @@ function createMoreInfoHTML(coin) {
 }
 
 function toggleCoin(coinId) {
+    const { selectedCoins } = state;
 
-    const index = state.selectedCoins.indexOf(coinId);
+    const index = selectedCoins.indexOf(coinId);
     if (index > -1) {
-        state.selectedCoins.splice(index, 1);
+        selectedCoins.splice(index, 1);
         return true;
     }
+    const canSelectCoin = selectedCoins.length < 2;
 
-    if (state.selectedCoins.length < 2) {
-
-        state.selectedCoins.push(coinId);
+    if (canSelectCoin) {
+        selectedCoins.push(coinId);
         return true;
+    } else {
+        state.candidateCoin = coinId;
+        openModal()
+        return false;
     }
- return false
+}
+
+function drawCoinsForModal() {
+
+    state.selectedCoins.forEach(coinId => {
+
+        drawCoinInModal(coinId)
+    })
+
+}
+
+function drawCoinInModal(coinId) {
+
+    const $coin = $(`
+    <div class="replace-coin-container">
+        <div class="replace-coin-id">
+         ${coinId}
+        </div>
+        <button class="replace btn btn-danger" >Replace</button>
+    </div>
+    `);
+
+    ELEMENTS.$modalBody.append($coin);
+
+    $coin.find('.replace').on('click', function () {
+        toggleCoin(coinId);
+        toggleCoin(state.candidateCoin);
+        closeModal();
+        $(`[data-coinid=${coinId}] .toggle-btn`).prop('checked', false);
+        $(`[data-coinid=${state.candidateCoin}] .toggle-btn`).prop('checked', true);
+    })
+
+
+
+}
+
+function openModal() {
+
+    ELEMENTS.$modalBody.empty()
+
+    drawCoinsForModal();
+
+    ELEMENTS.$modal.modal('show');
+
+}
+
+function closeModal() {
+
+    ELEMENTS.$modal.modal('hide');
+    
+
+
 }
 
 
