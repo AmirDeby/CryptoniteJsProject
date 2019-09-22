@@ -74,9 +74,9 @@ function drawCoins() {
 
 function drawCoin(coin) {
 
-    const elementId = `coin-${coin.id}`;
+    const elementId = `coin-${coin.symbol}`;
     const $coin = $(`
-    <div class="coin-container col-12 col-md-4" data-coinid="${coin.id}">
+    <div class="coin-container col-12 col-md-4" data-symbol="${coin.symbol}">
         <div class="coin card"> 
             <div>${coin.symbol}</div>
             <div class="coin-mrg">${coin.name}</div>
@@ -116,7 +116,7 @@ function drawCoin(coin) {
 
         $coin.find('.loader').show();
         await getMoreInfo(coin.id);
-        const coinInfo = state.coins.find(c => c.id === coin.id);
+        const coinInfo = state.coins.find(c => c.symbol === coin.symbol);
         const $moreInfo = createMoreInfoHTML(coinInfo);
         $coin.find('.loader').hide();
         $coin.find('.info').html($moreInfo);
@@ -124,7 +124,7 @@ function drawCoin(coin) {
 
     $toggleButton.on('click', function (e) {
 
-        const isToggled = toggleCoin(coin.id);
+        const isToggled = toggleCoin(coin.symbol);
         if (!isToggled) {
             e.preventDefault();
         }
@@ -187,10 +187,10 @@ function createMoreInfoHTML(coin) {
 }
 
 
-function toggleCoin(coinId) {
+function toggleCoin(symbol) {
     const { selectedCoins } = state;
 
-    const index = selectedCoins.indexOf(coinId);
+    const index = selectedCoins.indexOf(symbol);
     if (index > -1) {
         selectedCoins.splice(index, 1);
         return true;
@@ -198,10 +198,10 @@ function toggleCoin(coinId) {
     const canSelectCoin = selectedCoins.length < MAX_SELECTED_COINS;
 
     if (canSelectCoin) {
-        selectedCoins.push(coinId);
+        selectedCoins.push(symbol);
         return true;
     } else {
-        state.candidateCoin = coinId;
+        state.candidateCoin = symbol;
         openModal()
         return false;
     }
@@ -210,20 +210,20 @@ function toggleCoin(coinId) {
 
 function drawCoinsForModal() {
 
-    state.selectedCoins.forEach(coinId => {
+    state.selectedCoins.forEach(symbol => {
 
-        drawCoinInModal(coinId)
+        drawCoinInModal(symbol)
     })
 
 }
 
 
-function drawCoinInModal(coinId) {
+function drawCoinInModal(symbol) {
 
     const $coin = $(`
     <div class="replace-coin-container">
         <div class="replace-coin-id">
-         ${coinId}
+         ${symbol}
         </div>
         <button class="replace btn btn-danger" >Replace</button>
     </div>
@@ -233,7 +233,7 @@ function drawCoinInModal(coinId) {
 
     $coin.find('.replace').on('click', function () {
 
-        reaplceCoinInModal(coinId);
+        reaplceCoinInModal(symbol);
 
     })
 
@@ -258,13 +258,13 @@ function closeModal() {
 }
 
 
-function reaplceCoinInModal(coinId) {
+function reaplceCoinInModal(symbol) {
 
-    toggleCoin(coinId);
+    toggleCoin(symbol);
     toggleCoin(state.candidateCoin);
     closeModal();
-    $(`[data-coinid=${coinId}] .toggle-btn`).prop('checked', false);
-    $(`[data-coinid=${state.candidateCoin}] .toggle-btn`).prop('checked', true);
+    $(`[data-symbol=${symbol}] .toggle-btn`).prop('checked', false);
+    $(`[data-symbol=${state.candidateCoin}] .toggle-btn`).prop('checked', true);
     console.log(state.candidateCoin);
 }
 
