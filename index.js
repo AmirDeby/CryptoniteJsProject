@@ -7,14 +7,19 @@ const state = {
 }
 
 const ELEMENTS = {
+    $screen: $('#screen'),
     $coinsList: $('#coins-list'),
     $searchForm: $('#search-form'),
     $loader: $('#loader'),
     $modal: $('#cModal'),
     $modalBody: $('.modal-body'),
+    $reports: $('#reports'),
 }
+
 const NUM_OF_COINS = 100;
 const MAX_SELECTED_COINS = 2;
+
+
 
 init();
 
@@ -26,12 +31,10 @@ async function init() {
         drawCoins();
 
 
-
-
-
     } catch (error) {
         console.error('caught error!', error);
     }
+
     // START OF EVENT LISTENERS
     ELEMENTS.$searchForm.on('submit', function (event) {
 
@@ -104,7 +107,6 @@ function drawCoin(coin) {
 
     ELEMENTS.$coinsList.append($coin);
 
-
     const $toggleButton = $coin.find('.toggle-btn');
     //  initialize the toggle checkbox with the bootstrap toggle style
     // $toggleButton.bootstrapToggle();
@@ -130,6 +132,7 @@ function drawCoin(coin) {
 
 }
 
+
 function searchCoinInState(symbol) {
 
     const coin = state.coins.find(coin => coin.symbol === symbol);
@@ -138,11 +141,13 @@ function searchCoinInState(symbol) {
 
 }
 
+
 function clearCoinsFromHtml() {
 
     ELEMENTS.$coinsList.empty();
 
 }
+
 
 function drawError() {
 
@@ -152,6 +157,7 @@ function drawError() {
     `)
 
 }
+
 
 function filterCoin(symbol) {
 
@@ -167,7 +173,11 @@ function filterCoin(symbol) {
     // coin ? drawCoin(coin) : drawError();
 }
 
+
 function createMoreInfoHTML(coin) {
+
+    // const { coin } = market_data.current_price
+
     return $(`
     <div><img src="${coin.image.small}"/></div>
     <div>${coin.market_data.current_price.usd} $ </div>
@@ -175,6 +185,7 @@ function createMoreInfoHTML(coin) {
     <div>${coin.market_data.current_price.ils} ₪ </div>
     `);
 }
+
 
 function toggleCoin(coinId) {
     const { selectedCoins } = state;
@@ -196,6 +207,7 @@ function toggleCoin(coinId) {
     }
 }
 
+
 function drawCoinsForModal() {
 
     state.selectedCoins.forEach(coinId => {
@@ -204,6 +216,7 @@ function drawCoinsForModal() {
     })
 
 }
+
 
 function drawCoinInModal(coinId) {
 
@@ -219,16 +232,13 @@ function drawCoinInModal(coinId) {
     ELEMENTS.$modalBody.append($coin);
 
     $coin.find('.replace').on('click', function () {
-        toggleCoin(coinId);
-        toggleCoin(state.candidateCoin);
-        closeModal();
-        $(`[data-coinid=${coinId}] .toggle-btn`).prop('checked', false);
-        $(`[data-coinid=${state.candidateCoin}] .toggle-btn`).prop('checked', true);
+
+        reaplceCoinInModal(coinId);
+
     })
 
-
-
 }
+
 
 function openModal() {
 
@@ -240,12 +250,22 @@ function openModal() {
 
 }
 
+
 function closeModal() {
 
     ELEMENTS.$modal.modal('hide');
-    
+
+}
 
 
+function reaplceCoinInModal(coinId) {
+
+    toggleCoin(coinId);
+    toggleCoin(state.candidateCoin);
+    closeModal();
+    $(`[data-coinid=${coinId}] .toggle-btn`).prop('checked', false);
+    $(`[data-coinid=${state.candidateCoin}] .toggle-btn`).prop('checked', true);
+    console.log(state.candidateCoin);
 }
 
 

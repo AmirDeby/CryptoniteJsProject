@@ -26,15 +26,18 @@
             </button>
 
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav mr-auto">
-                    <li class="nav-item active">
-                        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                <ul class="nav nav-pills mr-auto" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-toggle="pill" href="#home" role="tab" aria-controls="pills-home"
+                            aria-selected="true">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Live Reports</a>
+                        <a class="nav-link" data-toggle="pill" href="#reports" role="tab" aria-controls="pills-reports"
+                            aria-selected="false">Live Reports</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">about</a>
+                        <a class="nav-link" data-toggle="pill" href="#about" role="tab" aria-controls="pills-about"
+                            aria-selected="false">About</a>
                     </li>
                 </ul>
                 <form class="form-inline my-2 my-lg-0" id="search-form">
@@ -44,9 +47,16 @@
                 </form>
             </div>
         </nav>
-        <div id="screen">
-            <div id="coins-list" class="row">
-
+        <div id="screen" class="tab-content">
+            <div id="home" class="tab-pane fade show active" role="tabpanel">
+                <div id="coins-list" class="row">
+                </div>
+            </div>
+            <div id="reports" class="tab-pane fade" role="tabpanel">
+                <div>HEllo</div>
+            </div>
+            <div id="about" class="tab-pane fade" role="tabpanel">
+                <div>About me</div>
             </div>
         </div>
 
@@ -56,15 +66,17 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Replace Coin</h5>
+                    <h4 class="modal-title" id="exampleModalLabel">Replace a Coin</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    
+
                 </div>
                 <div class="modal-footer">
+                    <h6 class="modal-title" id="exampleModalLabel">You Can <b>only choose 5 Coins</b> Please Replace
+                        Coin Or </h6>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                 </div>
             </div>
