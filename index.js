@@ -3,7 +3,7 @@ const state = {
     coins: [],
     selectedCoins: [],
     candidateCoin: null,
-
+    timerId: null,
 }
 
 const ELEMENTS = {
@@ -24,6 +24,7 @@ const MAX_SELECTED_COINS = 2;
 init();
 
 async function init() {
+
     try {
         // you can replace "then" with "await" every time
         await saveCoinsToState();
@@ -44,8 +45,18 @@ async function init() {
 
         filterCoin(symbol);
     })
+
+    $('#reports-btn').on('click', function () {
+        getCurrencyValues();
+        state.timerId = setInterval(getCurrencyValues, 2000);
+    });
+
+    $('#home-btn,#about-btn').on('click', function () {
+        clearInterval(state.timerId);
+    });
     // END OF EVENT LISTENERS
 }
+
 
 async function saveCoinsToState() {
 
@@ -53,8 +64,18 @@ async function saveCoinsToState() {
     // to make this async function look like a sync function
     // this way, we don't have to deal with promises - we just get the resolve value from the promise directly
     const coins = await getCoinsFromApi();
+
+
     state.coins = coins.slice(0, NUM_OF_COINS);
 
+
+}
+
+async function getCurrencyValues() {
+    const symbols = state.selectedCoins.map(symbol => symbol.toUpperCase());
+
+    const conversionValues = await getCurrencyValuesFromApi(symbols);
+    console.log(conversionValues);
 }
 
 async function getMoreInfo(coinId) {
@@ -176,13 +197,13 @@ function filterCoin(symbol) {
 
 function createMoreInfoHTML(coin) {
 
-    // const { coin } = market_data.current_price
+    const { usd, eur, ils } = coin.market_data.current_price
 
     return $(`
     <div><img src="${coin.image.small}"/></div>
-    <div>${coin.market_data.current_price.usd} $ </div>
-    <div>${coin.market_data.current_price.eur} € </div>
-    <div>${coin.market_data.current_price.ils} ₪ </div>
+    <div>${usd} $ </div>
+    <div>${eur} € </div>
+    <div>${ils} ₪ </div>
     `);
 }
 
@@ -233,7 +254,7 @@ function drawCoinInModal(symbol) {
 
     $coin.find('.replace').on('click', function () {
 
-        reaplceCoinInModal(symbol);
+        replaceCoinInModal(symbol);
 
     })
 
@@ -258,14 +279,14 @@ function closeModal() {
 }
 
 
-function reaplceCoinInModal(symbol) {
+function replaceCoinInModal(symbol) {
 
     toggleCoin(symbol);
     toggleCoin(state.candidateCoin);
     closeModal();
     $(`[data-symbol=${symbol}] .toggle-btn`).prop('checked', false);
     $(`[data-symbol=${state.candidateCoin}] .toggle-btn`).prop('checked', true);
-    console.log(state.candidateCoin);
+    getCurrencyValues();
 }
 
 
