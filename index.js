@@ -6,6 +6,8 @@ const state = {
     timerId: null,
 }
 
+const CHART_COLORS = ['blue', 'red', 'black', 'orange', 'yellow'];
+
 const ELEMENTS = {
     $screen: $('#screen'),
     $coinsList: $('#coins-list'),
@@ -14,10 +16,11 @@ const ELEMENTS = {
     $modal: $('#cModal'),
     $modalBody: $('.modal-body'),
     $reports: $('#reports'),
+    $chart: $('#myChart'),
 }
 
 const NUM_OF_COINS = 100;
-const MAX_SELECTED_COINS = 2;
+const MAX_SELECTED_COINS = 5;
 
 
 
@@ -46,9 +49,54 @@ async function init() {
         filterCoin(symbol);
     })
 
-    $('#reports-btn').on('click', function () {
-        getCurrencyValues();
-        state.timerId = setInterval(getCurrencyValues, 2000);
+    $('#reports-btn').on('click', async function () {
+        ELEMENTS.$chart = $('#myChart');
+        if (!state.selectedCoins.length) {
+            $(".no-coins").show();
+            ELEMENTS.$chart.hide();
+            return;
+        }
+
+        $(".no-coins").hide();
+        ELEMENTS.$chart.show();
+
+        const data = await getCurrencyValues();
+
+        // re-draw the chart
+        const chart = new Chart(ELEMENTS.$chart, {
+            // i want a line chart
+            type: 'line',
+            // i want a title
+            options: {
+                title: {
+                    display: true,
+                    text: 'Cryptocurrencies in USD'
+                }
+            },
+            data: {
+                // first data point
+                labels: [formatDate(new Date())],
+                datasets: Object.keys(data).map((symbol,index) => ({
+                    label: symbol,
+                    backgroundColor: CHART_COLORS[index],
+                    borderColor: CHART_COLORS[index],
+                    fill: false,
+                    data: [data[symbol].USD],
+                }))
+            },
+        });
+
+        state.timerId = setInterval(async function () {
+            const data = await getCurrencyValues();
+            chart.data.labels.push(formatDate(new Date()));
+            Object.keys(data).forEach((symbol, i) => {
+                chart.data.datasets[i].data.push(data[symbol].USD);
+            })
+            // update chart drawing
+            chart.update();
+        }, 2000);
+
+
     });
 
     $('#home-btn,#about-btn').on('click', function () {
@@ -57,6 +105,10 @@ async function init() {
     // END OF EVENT LISTENERS
 }
 
+
+function formatDate(date) {
+    return `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+}
 
 async function saveCoinsToState() {
 
@@ -75,7 +127,8 @@ async function getCurrencyValues() {
     const symbols = state.selectedCoins.map(symbol => symbol.toUpperCase());
 
     const conversionValues = await getCurrencyValuesFromApi(symbols);
-    console.log(conversionValues);
+    return conversionValues;
+
 }
 
 async function getMoreInfo(coinId) {
