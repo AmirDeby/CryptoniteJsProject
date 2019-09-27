@@ -17,6 +17,7 @@ const ELEMENTS = {
     $modalBody: $('.modal-body'),
     $reports: $('#reports'),
     $chart: $('#myChart'),
+    $empty: $('#empty-list'),
 }
 
 const NUM_OF_COINS = 100;
@@ -76,7 +77,7 @@ async function init() {
             data: {
                 // first data point
                 labels: [formatDate(new Date())],
-                datasets: Object.keys(data).map((symbol,index) => ({
+                datasets: Object.keys(data).map((symbol, index) => ({
                     label: symbol,
                     backgroundColor: CHART_COLORS[index],
                     borderColor: CHART_COLORS[index],
@@ -215,36 +216,55 @@ function searchCoinInState(symbol) {
 
 }
 
+function showCoins() {
 
-function clearCoinsFromHtml() {
+    $('.coin-container').show();
 
-    ELEMENTS.$coinsList.empty();
+}
+
+function hideCoins() {
+
+    $('.coin-container').hide();
 
 }
 
 
-function drawError() {
+function showEmptySearchMsg() {
 
-    clearCoinsFromHtml()
-    ELEMENTS.$coinsList.append(`
-    <h2>Coin not Found</h2>
-    `)
+    ELEMENTS.$empty.show()
+
+}
+
+function hideEmptySearchMsg() {
+
+    ELEMENTS.$empty.hide()
+
 
 }
 
 
 function filterCoin(symbol) {
 
+    hideEmptySearchMsg()
+    hideCoins();
+
+    if (!symbol) {
+        showCoins();
+
+        return;
+    }
+
+
     const coin = searchCoinInState(symbol);
-    clearCoinsFromHtml();
-    if (coin) {
-        drawCoin(coin)
-    }
-    else {
-        drawError()
-    }
+
+    coin ? showCoin(symbol) : showEmptySearchMsg();
     // equivalent to:
-    // coin ? drawCoin(coin) : drawError();
+    // if (coin) {
+    //     showCoin(symbol)
+    // }
+    // else {
+    //     showError()
+    // }
 }
 
 
@@ -342,4 +362,10 @@ function replaceCoinInModal(symbol) {
     getCurrencyValues();
 }
 
+
+function showCoin(symbol) {
+
+    $(`[data-symbol=${symbol}]`).show();
+
+}
 
