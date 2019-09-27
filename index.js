@@ -20,7 +20,7 @@ const ELEMENTS = {
     $empty: $('#empty-list'),
 }
 
-const NUM_OF_COINS = 100;
+const NUM_OF_COINS = 1000;
 const MAX_SELECTED_COINS = 5;
 
 
@@ -151,16 +151,22 @@ function drawCoin(coin) {
 
     const elementId = `coin-${coin.symbol}`;
     const $coin = $(`
-    <div class="coin-container col-12 col-md-4" data-symbol="${coin.symbol}">
+    <div class="coin-container col-12 col-md-3" data-symbol="${coin.symbol}">
         <div class="coin card"> 
-            <div>${coin.symbol}</div>
+            <div class="coin-header">
+                <span class="coin-symbol" >${coin.symbol}</span> 
+                
+                <input id="${coin.symbol}-toggle" type="checkbox" class="toggle-btn">
+                <label for="${coin.symbol}-toggle" class="toggle"></label>
+                
+            </div>
             <div class="coin-mrg">${coin.name}</div>
-            <input type="checkbox" class="toggle-btn" data-style="ios">
-            <p>
+            
+            <div>
                 <button class="more-info-btn btn btn-primary" type="button" data-toggle="collapse" data-target="#${elementId}" aria-expanded="false" aria-controls="collapseExample">
                 More Info
                 </button>
-            </p>
+            </div>
             <div class="collapse" id="${elementId}">
                 <div class="card card-body">
                 <div class="loader loader-dis lds-roller">
@@ -183,8 +189,13 @@ function drawCoin(coin) {
     ELEMENTS.$coinsList.append($coin);
 
     const $toggleButton = $coin.find('.toggle-btn');
-    //  initialize the toggle checkbox with the bootstrap toggle style
-    // $toggleButton.bootstrapToggle();
+
+    $toggleButton.on('click', function (e) {
+        const isToggled = toggleCoin(coin.symbol);
+        if (!isToggled) {
+            e.preventDefault();
+        }
+    })
 
     const $moreInfoButton = $coin.find(".more-info-btn");
     $moreInfoButton.on('click', async function () {
@@ -197,13 +208,6 @@ function drawCoin(coin) {
         $coin.find('.info').html($moreInfo);
     })
 
-    $toggleButton.on('click', function (e) {
-
-        const isToggled = toggleCoin(coin.symbol);
-        if (!isToggled) {
-            e.preventDefault();
-        }
-    })
 
 }
 

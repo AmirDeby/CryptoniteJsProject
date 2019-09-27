@@ -1,6 +1,18 @@
-.toggle { cursor: pointer; }
-  .toggle.ios, .toggle-on.ios, .toggle-off.ios { border-radius: 20px; }
-  .toggle.ios .toggle-handle { border-radius: 20px; }
+.toggle { 
+  border: 1px solid #ddd; 
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  border-radius: 50%;
+  background-color: lightpink;
+  transition: background-color 0.2s;
+ }
 
-
-
+ /* .toggle is the young sibling of .toggle-btn */
+ .toggle-btn:checked + .toggle {
+   background-color: lightgreen;
+ }
+ 
+.toggle-btn {
+  display: none;
+}

@@ -31,3 +31,16 @@ margin-bottom: 15px;
 .no-coins{
     display: none;
 }
+
+.coin-header{
+    display: flex;
+}
+
+.coin-symbol{
+flex: 1;
+}
+
+.more-info-btn{
+    width: 100%;
+    margin-top: 16px;
+}
