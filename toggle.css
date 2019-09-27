@@ -4,13 +4,13 @@
   height: 20px;
   cursor: pointer;
   border-radius: 50%;
-  background-color: lightpink;
+  background-color: #e24f65;
   transition: background-color 0.2s;
  }
 
  /* .toggle is the young sibling of .toggle-btn */
  .toggle-btn:checked + .toggle {
-   background-color: lightgreen;
+   background-color: rgb(7, 158, 7);
  }
  
 .toggle-btn {
