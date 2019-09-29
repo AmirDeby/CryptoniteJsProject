@@ -37,7 +37,8 @@ margin-bottom: 15px;
 
 .no-coins{
     display: none;
-  background-color: rgba(255, 228, 196, 0.685);
+  background-color: rgba(226, 223, 47, 0.418);
+  text-align: center;
 }
 
 .coin-header{

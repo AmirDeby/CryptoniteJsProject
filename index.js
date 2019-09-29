@@ -20,7 +20,7 @@ const ELEMENTS = {
     $empty: $('#empty-list'),
 }
 
-const NUM_OF_COINS = 1000;
+const NUM_OF_COINS = 1500;
 const MAX_SELECTED_COINS = 5;
 
 
